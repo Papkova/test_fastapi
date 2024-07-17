@@ -20,11 +20,6 @@ class UserCreate(BaseModel):
     age: Optional[conint(ge=18, le=100)] = None
 
 
-class UserUpdate(BaseModel):
-    name: Optional[constr(min_length=2, max_length=50)] = None
-    email: Optional[EmailStr] = None
-    age: Optional[conint(ge=18, le=100)] = None
-
 
 class Item(BaseModel):
     id: int
@@ -39,10 +34,6 @@ class ItemCreate(BaseModel):
     price: confloat(gt=0)
 
 
-class ItemUpdate(BaseModel):
-    title: Optional[constr(min_length=2, max_length=100)] = None
-    description: Optional[constr(max_length=500)] = None
-    price: Optional[confloat(gt=0)] = None
 
 
 
@@ -59,18 +50,13 @@ def user_create(user: UserCreate):
     return new_user
 
 
-@app.put("/users/{user_id}")
-def update_user(user_id: int, user_update: UserUpdate):
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
     for user in users:
         if user.id == user_id:
-            if user_update.name is not None:
-                user.name = user_update.name
-            if user_update.email is not None:
-                user.email = user_update.email
-            if user_update.age is not None:
-                user.age = user_update.age
             return user
-    raise HTTPException(status_code=404, detail="User not found")
+    raise HTTPException(status_code=404, detail="Task not found ")
+
 
 
 @app.post("/items")
@@ -80,16 +66,9 @@ def item_create(item: ItemCreate):
     items.append(new_item)
     return new_item
 
-
-@app.put("/items/{items_id}")
-def update_item(item_id: int, item_update: ItemUpdate):
+@app.get("/items/{item_id}")
+def get_items(item_id: int):
     for item in items:
         if item.id == item_id:
-            if item_update.title is not None:
-                item.title = item_update.title
-            if item_update.description is not None:
-                item.description = item_update.description
-            if item_update.price is not None:
-                item.price = item_update.price
             return item
-    raise HTTPException(status_code=404, detail="Item not found")
+    raise HTTPException(status_code=404, detail="Task not found ")
